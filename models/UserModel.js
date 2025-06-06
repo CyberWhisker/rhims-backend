@@ -1,0 +1,70 @@
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+
+const Schema = mongoose.Schema
+
+const UserSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    picture: {
+        type: String
+    },
+    role: {
+        type: String,
+        default: 'user'
+    },
+    verified: {
+        type: Boolean,
+        default: false
+    }
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } })
+
+// Static register method
+UserSchema.statics.registerHash = async function (formData) {
+    const { email, password } = formData
+    const exists = await this.findOne({ email })
+
+    if (exists) {
+        throw Error('Email already in use')
+    }
+
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+
+    const user = await this.create({
+        ...formData,
+        role: 'user',
+        password: hash
+    })
+
+    return user
+}
+
+UserSchema.statics.loginHash = async function (email, password) {
+    const user = await this.findOne({ email })
+
+    if (!user) {
+        throw Error('Invalid Email')
+    }
+
+    const match = await bcrypt.compare(password, user.password)
+
+    if (!match) {
+        throw Error('Incorrect password')
+    }
+
+    return user
+}
+
+module.exports = mongoose.model('User', UserSchema)
