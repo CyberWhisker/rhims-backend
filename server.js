@@ -25,12 +25,8 @@ app.use(express.json());
 
 // API Routes
 app.use('/user', require('./routes/user'));
-app.use('/techStack', require('./routes/techStack'));
-app.use('/project', require('./routes/project'));
-app.use('/experience', require('./routes/experience'));
 app.use('/file', require('./routes/file'));
-app.use('/conversation', require('./routes/conversation'));
-app.use('/message', require('./routes/message'));
+app.use('/image', require('./routes/image'));
 
 // Socket.IO setup
 setupSocket(server); // 👈 Initialize socket(s)

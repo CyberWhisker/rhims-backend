@@ -1,16 +1,16 @@
 const Model = require('../models/UserModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const FileUpload = require('../utils/ImageUploadUtil')
 const sendVerificationEmail = require('../utils/sendVerificationEmail')
 const { default: mongoose } = require('mongoose')
 const sendPasswordResetEmail = require('../utils/sendPasswordRequestEmail')
-const FileUpload = require('../utils/FileUploadUtil')
 
 const login = async (req, res) => {
     const { email, password } = req.body
     try {
         const data = await Model.loginHash(email, password)
-        res.status(200).json({ _id: data._id, email: data.email, role: data.role, picture: data.picture, verified: data.verified })
+        res.status(200).json({ _id: data._id, email: data.email, role: data.role, image: data.image, verified: data.verified })
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
@@ -20,7 +20,7 @@ const register = async (req, res) => {
     try {
         const user = await Model.registerHash(req.body)
         await sendVerificationEmail(user.email, user._id)
-        res.status(200).json({ _id: user._id, email: user.email, role: user.role, picture: user.picture, verified: user.verified })
+        res.status(200).json({ _id: user._id, email: user.email, role: user.role, image: user.image, verified: user.verified })
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
@@ -41,8 +41,8 @@ const updateData = async (req, res) => {
         if (req.file) {
             const savedFileId = await FileUpload.processAndSaveFile(req.file)
             const baseUrl = `${req.protocol}://${req.get('host')}`;
-            const fileUrl = `${baseUrl}/file/${savedFileId}`;
-            updateFields.picture = fileUrl
+            const fileUrl = `${baseUrl}/image/${savedFileId}`;
+            updateFields.image = fileUrl
         }
 
         const user = await Model.findByIdAndUpdate(id, updateFields, { new: true });
@@ -63,11 +63,12 @@ const deleteData = async (req, res) => {
 };
 
 const usingGoogle = async (req, res) => {
-    const { email } = req.body;
+    const { email, picture } = req.body;
     try {
         // Create user data with a default password
         const formData = {
             ...req.body,
+            image: picture,
             verified: true,  // This can be set to a default password or generated
             password: 'default',  // This can be set to a default password or generated
         };
@@ -80,7 +81,7 @@ const usingGoogle = async (req, res) => {
             _id: user._id,
             email: user.email,
             role: user.role,
-            picture: user.picture,
+            image: user.image,
             verified: user.verified,
         });
     } catch (error) {
@@ -94,7 +95,7 @@ const usingGoogle = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                picture: user.picture,
+                image: user.image,
                 verified: user.verified,
             });
         }
@@ -116,7 +117,6 @@ const getData = async (req, res) => {
 
 const verifyEmail = async (req, res) => {
     const { token, userId } = req.query;
-
     if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ error: 'Invalid user ID.' });
     }
@@ -136,7 +136,7 @@ const verifyEmail = async (req, res) => {
             return res.status(404).json({ error: 'User not found.' });
         }
 
-        res.status(200).json({ message: 'Email successfully verified!', data: { _id: user._id, email: user.email, role: user.role, picture: user.picture, verified: user.verified } });
+        res.status(200).json({ message: 'Email successfully verified!', data: { _id: user._id, email: user.email, role: user.role, image: user.image, verified: user.verified } });
     } catch (error) {
         console.log(error)
         res.status(400).json({ error: error.message });

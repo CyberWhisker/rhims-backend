@@ -17,12 +17,12 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    picture: {
+    image: {
         type: String
     },
     role: {
         type: String,
-        default: 'user'
+        default: 'User'
     },
     verified: {
         type: Boolean,
@@ -44,7 +44,7 @@ UserSchema.statics.registerHash = async function (formData) {
 
     const user = await this.create({
         ...formData,
-        role: 'user',
+        role: 'User',
         password: hash
     })
 
