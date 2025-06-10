@@ -27,6 +27,8 @@ app.use(express.json());
 app.use('/user', require('./routes/user'));
 app.use('/file', require('./routes/file'));
 app.use('/image', require('./routes/image'));
+app.use('/household', require('./routes/household'));
+app.use('/people', require('./routes/people'));
 
 // Socket.IO setup
 setupSocket(server); // 👈 Initialize socket(s)
