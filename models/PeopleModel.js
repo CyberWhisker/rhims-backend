@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const peopleSchema = new mongoose.Schema({
     householdId: {
         type: mongoose.Types.ObjectId,
+        ref: 'Household',
         required: true
     },
     firstName: {
@@ -22,6 +23,22 @@ const peopleSchema = new mongoose.Schema({
         required: true
     },
     gender: {
+        type: String,
+        required: true
+    },
+    relationship: {
+        type: String,
+        required: true
+    },
+    civilStatus: {
+        type: String,
+        required: true
+    },
+    education: {
+        type: String,
+        required: true
+    },
+    religion: {
         type: String,
         required: true
     },
