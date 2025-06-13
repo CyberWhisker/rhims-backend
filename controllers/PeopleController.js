@@ -19,6 +19,18 @@ const storeData = async (req, res) => {
     }
 };
 
+const storeMultipleData = async (req, res) => {
+    try {
+        if (!Array.isArray(req.body)) {
+            return res.status(400).json({ error: 'Expected an array of data' });
+        }
+        const data = await Model.insertMany(req.body);
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 const editData = async (req, res) => {
     const { id } = req.params
     try {
@@ -44,5 +56,6 @@ module.exports = {
     getData,
     storeData,
     editData,
-    deleteData
+    deleteData,
+    storeMultipleData
 }
