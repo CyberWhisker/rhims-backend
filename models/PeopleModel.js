@@ -50,6 +50,37 @@ const peopleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+
+    demographics: {
+        ethnicity: String,
+        is4PsMember: Boolean,
+        philHealth: {
+            idNumber: String,
+            membershipType: String,
+            category: String
+        }
+    },
+    health: {
+        medicalHistory: String,
+        lastMenstrualPeriod: Date,
+        familyPlanning: {
+            usingAnyMethod: Boolean,
+            methodUsed: String,
+            status: String
+        },
+        waterSourceType: String,
+        toiletFacilityType: String,
+        conditions: {
+            asthma: Boolean,
+            cancer: Boolean,
+            pwde: Boolean,
+            stroke: Boolean,
+            mass: Boolean,
+            mhgap: Boolean,
+            smoker: Boolean,
+            alcoholDrinker: Boolean
+        }
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model('People', peopleSchema);

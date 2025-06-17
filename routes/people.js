@@ -1,8 +1,10 @@
 const express = require('express');
-const { getData, storeData, editData, deleteData, storeMultipleData } = require('../controllers/PeopleController');
+const { getData, storeData, editData, deleteData, storeMultipleData, getDataById, getDataByHouseholdId } = require('../controllers/PeopleController');
 const router = express.Router();
 
 router.get('/', getData);
+router.get('/:id', getDataById);
+router.get('/household/:id', getDataByHouseholdId);
 router.post('/storeMultipleData', storeMultipleData);
 router.post('/', storeData);
 router.patch('/:id', editData);

@@ -10,6 +10,26 @@ const getData = async (req, res) => {
     }
 };
 
+const getDataById = async (req, res) => {
+    const { id } = req.params
+    try {
+        const data = await Model.findById(id)
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+
+const getDataByHouseholdId = async (req, res) => {
+    const { id } = req.params
+    try {
+        const data = await Model.find({ householdId: id }).populate('householdId')
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+};
+
 const storeData = async (req, res) => {
     try {
         const data = await Model.create(req.body)
@@ -57,5 +77,7 @@ module.exports = {
     storeData,
     editData,
     deleteData,
-    storeMultipleData
+    storeMultipleData,
+    getDataById,
+    getDataByHouseholdId
 }
